@@ -520,7 +520,7 @@ func baseRetryPolicy(resp *http.Response, err error) (bool, error) {
 func DefaultBackoff(min, max time.Duration, attemptNum int, resp *http.Response) time.Duration {
 	if resp != nil {
 		if resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode == http.StatusServiceUnavailable {
-			if s, ok := resp.Header["Retry-After"]; ok {
+			if s := resp.Header.Get("Retry-After"); s != "" {
 				if sleep, err := strconv.ParseInt(s[0], 10, 64); err == nil {
 					return time.Second * time.Duration(sleep)
 				}
